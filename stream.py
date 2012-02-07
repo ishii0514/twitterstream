@@ -9,7 +9,10 @@ from cgi import escape
 
 # Streaming APIのURL
 STREAM_URL = 'https://stream.twitter.com/1/statuses/sample.json'
-
+# 設定ファイル名
+CONFIG_FILE = 'setting.ini'
+# 出力ファイル名
+OUTPUT_CSV = 'stream.csv'
 
 class Config:
     """設定情報クラス"""
@@ -46,6 +49,18 @@ def printHTML(json):
                escape(data['user']['screen_name'].encode('utf-8', 'ignore')),
                escape(data['text'].encode('utf-8', 'ignore'))))
 
+def printCSV(json):
+    data = simplejson.loads(json)
+    text = data.get('text')
+    
+    f = open(OUTPUT_CSV, 'a')
+    if text:
+        f.write('%s,%s\n'%
+              (escape(data['user']['screen_name'].encode('utf-8', 'ignore')),
+              escape(data['text'].encode('utf-8', 'ignore'))))
+
+    f.close() # ファイルを閉じる
+
 def getstream(conf):
     """ツイッターStreaming APIから読み込んだツイートを出力"""
     req = urllib2.Request(STREAM_URL, headers={
@@ -56,7 +71,8 @@ def getstream(conf):
     ua = urllib2.urlopen(req)
     conf.setstart()
     for line in ua:
-        printHTML(line)
+        #printHTML(line)
+        printCSV(line)
         if conf.is_timeover():
             break
 
@@ -64,7 +80,7 @@ def getstream(conf):
 
 def main():
     #設定情報取得
-    conf = Config('setting.ini')
+    conf = Config(CONFIG_FILE)
     #stream取得
     getstream(conf)
     
