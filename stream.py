@@ -53,12 +53,26 @@ def printCSV(json):
     data = simplejson.loads(json)
     text = data.get('text')
     
+    
     f = open(OUTPUT_CSV, 'a')
-    if text:
-        f.write('%s,%s\n'%
-              (escape(data['user']['screen_name'].encode('utf-8', 'ignore')),
-              escape(data['text'].encode('utf-8', 'ignore'))))
+    if text and (data['geo'] and data['geo']['coordinates']):
+        f.write('%s,%s,%s,%s\n'%
+              (
+               str(data['geo']['coordinates'][0]),
+               str(data['geo']['coordinates'][1]),
+               escape(data['user']['screen_name'].encode('utf-8', 'ignore')),
+               escape(data['text'].encode('utf-8', 'ignore'))))
 
+    f.close() # ファイルを閉じる
+
+def printJson(json):
+    #data = simplejson.loads(json)
+    #text = data.get('text')
+    
+    f = open(OUTPUT_CSV, 'a')
+    f.write('%s\n'%
+                (escape(json.encode('utf-8', 'ignore'))))
+    
     f.close() # ファイルを閉じる
 
 def getstream(conf):
@@ -73,6 +87,7 @@ def getstream(conf):
     for line in ua:
         #printHTML(line)
         printCSV(line)
+        #printJson(line)
         if conf.is_timeover():
             break
 
