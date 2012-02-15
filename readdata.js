@@ -1,19 +1,15 @@
 var map;
 var markersArray = [];
 
-function initialize() {
-  var latlng = new google.maps.LatLng(41.791217,140.775032);
-  var opts = {
-    zoom: 10,
-    center: latlng,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  map = new google.maps.Map(document.getElementById("map_canvas"), opts);
- //google.maps.event.addListener(map,'click',clickAction);
-  
-}
+
 $(function(){
-  // JSONファイル読み込み開始
+	//"$(document).ready(function(){...});"と同じ
+	// body onload の前に呼ばれる
+	
+  //mapの初期化
+  initialize();
+  // JSONファイル読み込み開始ボタン
+  /*
   $("#dl","#btn").click(function(){
 	  $.ajax({
 		url:"data.json",
@@ -25,7 +21,9 @@ $(function(){
     }
     });
   });
-$.smartupdater({
+  */
+  //JSONファイルポーリング
+  $("#map_canvas").smartupdater({
 	url : "data.json",
 	dataType:"json",
 	minTimeout: 2000 	// 2 seconds
@@ -34,16 +32,27 @@ $.smartupdater({
 		var data=jsonRequest(json);
 		addMarker(data);
 	}
-);  
+  );
 });
 
+
+function initialize() {
+  var latlng = new google.maps.LatLng(41.791217,140.775032);
+  var opts = {
+    zoom: 10,
+    center: latlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  map = new google.maps.Map(document.getElementById("map_canvas"), opts);
+ //google.maps.event.addListener(map,'click',clickAction);
+  
+}
 
 // JSONファイル読み込み
 function jsonRequest(json){
   var data=[];
   if(json.Marker){
-    var n=json.Marker.length;
-    for(var i=0;i<n;i++){
+    for(var i=0;i<json.Marker.length;i++){
       data.push(json.Marker[i]);
     }
   }

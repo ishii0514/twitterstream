@@ -11,19 +11,17 @@
         <script src="./readdata.js" type="text/javascript"></script>
         
     </head>
-    <body onload="initialize()">
+	<body>
         <p>Google Maps APIを使ったサンプルです。</p>
-		<div id="dummy" >
         <div id="map_canvas" style="width:1000px; height:700px"></div>
-		</div>
         <form>
             <p>
             <div id="btn">
             <input type="button" id="dl" value="ダウンロード" />
             </div>
             </p>
-			<input onClick='$("#dummy").smartupdater("stop")'    type="button" value="Stop"    />
-			<input onClick='$("#dummy").smartupdater("restart")' type="button" value="Restart" />
+			<input onclick='$("#map_canvas").smartupdater("stop")'    type="button" value="Stop"    />
+			<input onclick='$("#map_canvas").smartupdater("restart")' type="button" value="Restart" />
         </form>
 		
         

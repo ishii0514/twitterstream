@@ -13,7 +13,7 @@ STREAM_URL = 'https://stream.twitter.com/1/statuses/sample.json'
 CONFIG_FILE = 'setting.ini'
 # 出力ファイル名
 OUTPUT_CSV = 'stream.csv'
-
+OUTPUT_JSON = 'stream.json'
 class Config:
     """設定情報クラス"""
     def __init__(self,file):
@@ -65,7 +65,18 @@ def printCSV(json):
 
     f.close() # ファイルを閉じる
 
-def printJson(json):
+def printJSON(json,f):
+    data = simplejson.loads(json)
+    text = data.get('text')
+    if text and (data['geo'] and data['geo']['coordinates']):
+        f.write('{"lat": %s,"lng":%s,"content":"%s"]}\n'%
+              (
+               str(data['geo']['coordinates'][0]),
+               str(data['geo']['coordinates'][1]),
+               escape(data['text'].encode('utf-8', 'ignore'))))
+
+def printRAWJson(json):
+    '''json生データ'''
     #data = simplejson.loads(json)
     #text = data.get('text')
     
@@ -83,14 +94,14 @@ def getstream(conf):
                           })
     
     ua = urllib2.urlopen(req)
+    f = open(OUTPUT_JSON, 'w')
+    f.write('%s'\n'% {"Marker":[]}')
     conf.setstart()
     for line in ua:
-        #printHTML(line)
-        printCSV(line)
-        #printJson(line)
+        printJSON(line,f)
         if conf.is_timeover():
             break
-
+    f.close()
 
 
 def main():
